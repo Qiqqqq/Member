@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+        <c3p0-config>
+	<default-config>
+		<property name="driverClass">com.mysql.jdbc.Driver</property>
+		<property name="jdbcUrl">jdbc:mysql:</property>
+		<property name="user">root</property>
+		<property name="password">#EDC3edc</property>
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="300" />
+		<property name="maxIdleTime" value="60" />
+		<property name="acquireIncrement" value="5" />
+		<property name="initialPoolSize" value="1" />
+		<property name="idleConnectionTestPeriod" value="60" />
+	</default-config>
+	<named-config name="mysql">
+		<property name="driverClass">com.mysql.jdbc.Driver</property>
+		<property name="jdbcUrl">jdbc:mysql://10.1.31.143:3306/cms?useUnicode=true&amp;zeroDateTimeBehavior=round&amp;characterEncoding=UTF-8&amp;useSSL=false</property>
+		<property name="user">root</property>
+		<property name="password">#EDC3edc</property>
+		<property name="minPoolSize">1</property>
+		<property name="maxPoolSize">300</property>
+		<property name="maxIdleTime">1000</property>
+		<property name="acquireIncrement">5</property>
+		<property name="initialPoolSize">1</property>
+		<property name="idleConnectionTestPeriod">60</property>
+		<property name="hibernate.connection.provider_class">  
+            org.hibernate.connection.C3P0ConnectionProvider  
+        </property>  
+<!-- 初始化默认为20 -->  
+                  <property name="initialPoolSize">1</property>  
+        <property name="c3p0.min_size">1</property>  
+        <property name="c3p0.max_size">500</property>  
+                    
+        <property name="c3p0.time_out">1800</property>  
+<!--每隔100秒检测连接是否可正常使用 -->     
+    <property name="c3p0.idle_test_period">1000</property>   
+        <property name="c3p0.validate">true</property>  
+<property name="hibernate.c3p0.acquire_increment">3</property>   
+	</named-config> 
+	</c3p0-config> 
