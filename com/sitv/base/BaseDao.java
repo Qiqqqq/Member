@@ -1,5 +1,6 @@
 package com.sitv.base;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -11,7 +12,7 @@ import com.sitv.DbUtil.ConnectionPool;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class BaseDao {
+public class BaseDao extends Base{
 	protected JSONArray getData(QueryHandler queryHandler){
 		ConnectionPool pool = new ConnectionPool();
 		String result="";
@@ -45,15 +46,101 @@ public class BaseDao {
 		
 		return jsonarray;
 	}
-	protected Integer setDB(QueryHandler queryHandler){
+	
+	protected JSONArray setDB(QueryHandler queryHandler){
 		ConnectionPool pool = new ConnectionPool();
-		Integer result=null;
+		JSONArray result=new JSONArray();
+		JSONObject jsonobj = new JSONObject();
 		try {
 			Connection con = pool.getConnection();
 			Statement statement = con.createStatement();
-			result = statement.executeUpdate(queryHandler.getSql());
-
+			int resultNum = statement.executeUpdate(queryHandler.getSql());
+			if(resultNum > 0) {
+				jsonobj.put("result", "OK!"); 
+			}
+			else{
+				jsonobj.put("result", "fail!"); 
+			}
 			//result = rs.getString(1);
+        	statement.close();
+        	pool.releaseConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	protected JSONArray DoVerify(QueryHandler queryHandler){
+		ConnectionPool pool = new ConnectionPool();
+		JSONArray result = new JSONArray(); 
+		JSONObject jsonobj = new JSONObject();
+		try {
+			Connection con = pool.getConnection();
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(queryHandler.getSql());
+			if (rs.next()){
+				jsonobj.put("result", "OK!"); 
+			}
+			else{
+				jsonobj.put("result", "ÓÃ»§Ãû»òÃÜÂë´íÎó!"); 
+			}
+			result.add(jsonobj);
+			//result = rs.getString(1);
+			rs.close();
+        	statement.close();
+        	pool.releaseConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public long getLastId(String name, String tableName){
+		QueryHandler queryHandler = getSelectMaxIdQueryHandler(name, tableName);
+		System.out.print(queryHandler.getSql() + "\n");
+		long id = 0L;
+		try {
+			ConnectionPool pool = new ConnectionPool();
+			Connection con = pool.getConnection();
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(queryHandler.getSql());
+			
+        	while (rs.next()) {
+        		id = rs.getLong("max("+name+")");
+        	}
+			//result = rs.getString(1);
+        	rs.close();
+        	statement.close();
+        	pool.releaseConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return id;
+	}
+	
+	protected JSONArray isRegisted(QueryHandler queryHandler){
+		ConnectionPool pool = new ConnectionPool();
+		JSONArray result = new JSONArray(); 
+		JSONObject jsonobj = new JSONObject();
+		try {
+			Connection con = pool.getConnection();
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(queryHandler.getSql());
+			if (rs.next()){
+				jsonobj.put("result", "ÓÃ»§ÃûÒÑ´æÔÚ£¡"); 
+			}
+			else{
+				jsonobj.put("result", "OK!"); 
+			}
+			result.add(jsonobj);
+			//result = rs.getString(1);
+			rs.close();
         	statement.close();
         	pool.releaseConnection(con);
 		} catch (SQLException e) {
@@ -79,5 +166,8 @@ public class BaseDao {
     }
     public static QueryHandler getSelectQueryHandler(String sql) {
         return getQueryHandler("select * from").append(sql).append("bean");
+    }
+    public static QueryHandler getSelectMaxIdQueryHandler(String name, String tableName) {
+        return getQueryHandler("select max("+ name +") from").append(tableName);
     }
 }

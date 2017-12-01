@@ -9,6 +9,8 @@ public class QueryHandler extends Base{
     public static final String KEYWORD_ORDER = " order by ";
     public static final String KEYWORD_GROUP = " group by ";
     boolean whereFlag = true;
+    boolean updateFlag = true;
+    
     boolean orderFlag = true;
     boolean groupFlag = true;
     private StringBuilder sqlBuilder;
@@ -45,6 +47,17 @@ public class QueryHandler extends Base{
             sqlBuilder.append(" where ");
         } else {
             sqlBuilder.append(" and ");
+        }
+        sqlBuilder.append(condition);
+        return this;
+    }
+    
+    public QueryHandler updateCondition(String condition) {
+        if (updateFlag) {
+        	updateFlag = false;
+            sqlBuilder.append(" set ");
+        } else {
+            sqlBuilder.append(" , ");
         }
         sqlBuilder.append(condition);
         return this;
@@ -124,6 +137,7 @@ public class QueryHandler extends Base{
     	sqlBuilder.append(")");
         return this;
     }
+    
     public QueryHandler setChangeParameter(Object... values) {
     	sqlBuilder.append("VALUES (");
     	for(Object value : values){

@@ -45,7 +45,7 @@ public class Member extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String classname = request.getParameter("func");
-		ConnectionPool connPool = (ConnectionPool)this.getServletContext().getAttribute("ConnectionPool");
+		//ConnectionPool connPool = (ConnectionPool)this.getServletContext().getAttribute("ConnectionPool");
 		JSONArray result=new JSONArray();
 		try {
 			result = (JSONArray)invokeMethod(request, classname);
